@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MineHostX API Tester</title>
+<style>
+body { background:#111; color:#fff; font-family:Segoe UI, sans-serif; text-align:center; }
+h2 { color:#4FC3F7; }
+button { background:#4FC3F7; border:none; border-radius:8px; padding:10px 20px; color:#000; font-weight:bold; cursor:pointer; margin:5px; }
+textarea { width:80%; height:150px; background:#000; color:#0f0; border-radius:8px; padding:10px; margin-top:10px; }
+input { padding:8px; margin:5px; border-radius:6px; border:none; width:200px; background:#222; color:#fff; }
+</style>
+</head>
+<body>
+  <h2>🔧 API Test — MineHostX</h2>
+  <p>Prueba los endpoints de la API directamente desde el navegador.</p>
+
+  <div>
+    <h3>Login</h3>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPass" type="password" placeholder="Contraseña">
+    <button onclick="apiLogin()">Iniciar sesión</button>
+  </div>
+
+  <div>
+    <h3>Crear servidor</h3>
+    <input id="srvName" placeholder="Nombre servidor">
+    <input id="srvRAM" type="number" value="2" min="1" placeholder="RAM GB">
+    <button onclick="apiCrear()">Crear</button>
+  </div>
+
+  <div>
+    <h3>Listar contenedores Docker</h3>
+    <button onclick="apiListDocker()">Listar Docker</button>
+  </div>
+
+  <div>
+    <h3>Ver logs de servidor</h3>
+    <input id="logID" placeholder="ID servidor">
+    <button onclick="apiLogs()">Ver logs</button>
+  </div>
+
+  <textarea id="output" readonly></textarea>
+
+<script>
+function out(msg){ document.getElementById('output').value = msg; }
+
+async function apiLogin(){
+  const data = new FormData();
+  data.append('email', document.getElementById('loginEmail').value);
+  data.append('password', document.getElementById('loginPass').value);
+  const r = await fetch('api/autenticacion_login.php',{method:'POST',body:data});
+  out(await r.text());
+}
+
+async function apiCrear(){
+  const data = new FormData();
+  data.append('name', document.getElementById('srvName').value);
+  data.append('ram_gb', document.getElementById('srvRAM').value);
+  data.append('software', 'Vanilla');
+  const r = await fetch('api/crear_server.php',{method:'POST',body:data});
+  out(await r.text());
+}
+
+async function apiListDocker(){
+  const r = await fetch('api/lista_docker.php');
+  out(await r.text());
+}
+
+async function apiLogs(){
+  const id = document.getElementById('logID').value;
+  const r = await fetch('api/server_logs.php?id='+id);
+  out(await r.text());
+}
+</script>
+</body>
+</html>

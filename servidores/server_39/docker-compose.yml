@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  minecraft_39:
+    image: itzg/minecraft-server
+    container_name: server_39
+    ports:
+      - '25514:25565'
+    environment:
+      EULA: 'TRUE'
+      TYPE: 'Paper'
+      VERSION: '1.19.4'
+      MEMORY: '6G'
+    volumes:
+      - 'C:\xampp\htdocs\proyecto/servidores/server_39/data:/data'
+      - 'C:\xampp\htdocs\proyecto/servidores/server_39/mods:/data/mods'
+      - 'C:\xampp\htdocs\proyecto/servidores/server_39/plugins:/data/plugins'
+    restart: unless-stopped

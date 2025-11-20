@@ -1,0 +1,198 @@
+-- ==========================================
+-- Base de datos MineHostX — VERSIÓN CORRECTA
+-- ==========================================
+
+CREATE DATABASE IF NOT EXISTS minehostx
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE minehostx;
+
+-- ==========================================
+-- TABLA PLANS
+-- ==========================================
+DROP TABLE IF EXISTS plans;
+
+CREATE TABLE plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    max_servers INT DEFAULT 1,
+    max_ram INT DEFAULT 2,
+    price DECIMAL(10,2) DEFAULT 0.00
+) ENGINE=InnoDB;
+
+INSERT INTO plans (name, max_servers, max_ram, price) VALUES
+('Free', 1, 2, 0.00),
+('Premium', 3, 6, 4.99),
+('Pro', 5, 12, 9.99);
+
+-- ==========================================
+-- TABLA USERS
+-- ==========================================
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('user','admin') DEFAULT 'user',
+    plan_id INT DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (plan_id) REFERENCES plans(id)
+) ENGINE=InnoDB;
+
+-- ADMIN (contraseña = admin)
+INSERT INTO users (username, email, password_hash, role, plan_id)
+VALUES (
+    'admin',
+    'admin@minehostx.local',
+    '$2y$10$w7w0PfOeVXz5BwkBHn9QaO1S6pQ7DQfgMWzME2YkdE590j8p0r1Pe',
+    'admin',
+    3
+);
+
+-- ==========================================
+-- TABLA SERVERS
+-- ==========================================
+DROP TABLE IF EXISTS servers;
+
+CREATE TABLE servers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    software ENUM('Paper','Forge','Vanilla') NOT NULL,
+    ram_gb INT NOT NULL DEFAULT 1,
+    status ENUM('running','stopped') DEFAULT 'stopped',
+    port INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ==========================================
+-- TABLA BACKUPS (usada por páginas futuras)
+-- ==========================================
+DROP TABLE IF EXISTS backups;
+
+CREATE TABLE backups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    server_id INT NOT NULL,
+    file_path VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ==========================================
+-- TABLA LOGS (necesaria para server_logs.php)
+-- ==========================================
+DROP TABLE IF EXISTS server_logs;
+
+CREATE TABLE server_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    server_id INT NOT NULL,
+    mensaje TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE chatbot_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
+    answer TEXT NOT NULL,
+    category VARCHAR(50) DEFAULT 'general'
+);
+INSERT INTO chatbot_knowledge (question, answer, category) VALUES
+('precio', 'Puedes consultar todos nuestros planes en la sección Planes del menú.', 'planes'),
+('plan', 'Actualmente ofrecemos planes gratuitos y premium. Más información en la sección Planes.', 'planes'),
+('crear servidor', 'Para crear un servidor, entra en tu panel y pulsa en Crear Servidor.', 'servidores'),
+('error', 'Si tienes un error, por favor describe el mensaje exacto para ayudarte mejor.', 'soporte'),
+('docker', 'Docker se utiliza para crear servidores aislados y seguros para cada usuario.', 'tecnico'),
+('hola', '¡Hola! ¿En qué puedo ayudarte hoy?', 'saludo'),
+('buenas', '¡Buenas! ¿Qué necesitas?', 'saludo');
+
+
+CREATE TABLE IF NOT EXISTS payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  plan_id INT NOT NULL,
+  amount DECIMAL(8,2) NOT NULL,
+  currency VARCHAR(6) DEFAULT 'EUR',
+  status ENUM('pending','success','failed') DEFAULT 'pending',
+  card_mask VARCHAR(20) DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE servers
+ADD COLUMN ip VARCHAR(45) DEFAULT NULL AFTER port;
+
+
+CREATE TABLE faq (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(50) NOT NULL,
+    question VARCHAR(255) NOT NULL,
+    answer TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE server_console (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    server_id INT NOT NULL,
+    user_id INT NOT NULL,
+    command TEXT NOT NULL,
+    response TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE server_stats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    server_id INT NOT NULL,
+    ram_used FLOAT DEFAULT 0,
+    cpu_used FLOAT DEFAULT 0,
+    players INT DEFAULT 0,
+    tps FLOAT DEFAULT 20,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE server_tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    server_id INT NOT NULL,
+    type ENUM('restart','backup','command') NOT NULL,
+    command_text VARCHAR(255) DEFAULT NULL,
+    frequency ENUM('1h','6h','12h','24h','weekly') NOT NULL,
+    enabled BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE server_console (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    server_id INT NOT NULL,
+    user_id INT NOT NULL,
+    command TEXT NOT NULL,
+    response TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+
+ALTER TABLE server_logs
+ADD COLUMN categoria VARCHAR(50) DEFAULT 'INFO' AFTER server_id,
+ADD COLUMN usuario INT DEFAULT NULL AFTER mensaje;
+
+
+ALTER TABLE server_logs
+ADD FOREIGN KEY (usuario) REFERENCES users(id) ON DELETE SET NULL;
+
+
+
+
