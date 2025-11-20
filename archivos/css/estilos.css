@@ -1,0 +1,129 @@
+/* ===========================================================
+   🌐 MineHostX - Estilos globales
+   =========================================================== */
+
+:root {
+  --primary: #4FC3F7;
+  --bg-dark: #111;
+  --bg-card: #1E1E1E;
+  --text-light: #fff;
+  --text-muted: #aaa;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+/* ---------- HEADER ---------- */
+header {
+  background: var(--primary);
+  color: #000;
+  padding: 20px;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 1.8em;
+}
+
+/* ---------- BOTONES ---------- */
+button, .btn {
+  background: var(--primary);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover, .btn:hover {
+  background: #82DAFF;
+}
+
+/* ---------- ENLACES ---------- */
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- FORMULARIOS ---------- */
+form {
+  background: var(--bg-card);
+  display: inline-block;
+  margin-top: 50px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+input, select {
+  display: block;
+  width: 250px;
+  margin: 10px auto;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: var(--text-light);
+}
+
+input:focus, select:focus {
+  outline: 2px solid var(--primary);
+}
+
+/* ---------- TEXTOS ---------- */
+h1, h2, h3 {
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+p {
+  color: var(--text-muted);
+}
+
+/* ---------- TABLAS ---------- */
+table {
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  text-align: center;
+}
+
+th {
+  background: #222;
+  color: var(--primary);
+}
+
+tr:hover td {
+  background: #1A1A1A;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  margin-top: 60px;
+  background: #1A1A1A;
+  padding: 20px;
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+

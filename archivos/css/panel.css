@@ -1,0 +1,152 @@
+/* ===========================================================
+   ⚙️ MineHostX - Dashboard (usuario y admin)
+   =========================================================== */
+
+:root {
+  --primary: #4FC3F7;
+  --bg-dark: #121212;
+  --bg-card: #1E1E1E;
+  --text-light: #fff;
+  --text-muted: #bbb;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  background: var(--primary);
+  color: #000;
+  padding: 15px;
+  text-align: center;
+}
+
+.header a {
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 15px;
+}
+
+/* ---------- CONTENEDOR PRINCIPAL ---------- */
+.container {
+  padding: 30px;
+  text-align: center;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 25px;
+  border-radius: 12px;
+  margin: 20px auto;
+  width: 85%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.card h3 {
+  color: var(--primary);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- TABLAS ---------- */
+table {
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  text-align: center;
+}
+
+th {
+  background: #222;
+  color: var(--primary);
+}
+
+tr:hover td {
+  background: #1a1a1a;
+}
+
+/* ---------- BOTONES ---------- */
+button, .btn {
+  background: var(--primary);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover, .btn:hover {
+  background: #82DAFF;
+}
+
+/* ---------- FORMS ---------- */
+form {
+  background: var(--bg-card);
+  display: inline-block;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+input, select {
+  display: block;
+  width: 250px;
+  margin: 10px auto;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: var(--text-light);
+}
+
+input:focus, select:focus {
+  outline: 2px solid var(--primary);
+}
+
+/* ---------- CARDS DE ESTADÍSTICAS ---------- */
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.stat {
+  background: var(--bg-card);
+  padding: 25px;
+  border-radius: 12px;
+  width: 250px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.stat h4 {
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.stat p {
+  font-size: 1.5em;
+}
